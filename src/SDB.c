@@ -3,26 +3,54 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+
 student database[10];
 static int studentCount = 0;
 
 int main(){
 
     SDB_AddEntry();
-    printf("%d\n",studentCount);
-    printf("-------------------\n");
     SDB_AddEntry();
-    printf("%d\n",studentCount);
+    SDB_AddEntry();
+    SDB_AddEntry();
+    SDB_AddEntry();
+    SDB_AddEntry();
+    SDB_AddEntry();
+    SDB_AddEntry();
+    SDB_AddEntry();
+    SDB_AddEntry();
+    SDB_AddEntry();
     printf("-------------------\n");
-    for(int i =0; i<studentCount; i++){
-        printf("Student %d ID: %d\n", i+1, database[i].Student_ID);
-
-    }
+    printf("\n%d\n",studentCount);
+    printf("-------------------\n");
+    printf(".......%d.......\n",SDB_GetUsedSize());
+    printf((SDB_IsFull)? "Full":"Not Full");
     return 0;
 }
 
 
-Bool SDB_AddEntry(){
+Bool SDB_IsFull(){
+    if(SDB_GetUsedSize()==10){
+        return True;
+    }
+    return False;
+}
+
+
+uint8 SDB_GetUsedSize(){
+    for(int i=0;i<10;i++){
+        if(database[i].Student_ID == 0){
+            return i;
+        }
+    }
+    return 10;
+}
+
+
+
+
+
+Bool SDB_AddEntry(){//ID unique doesn't start with zero
         if(studentCount<10){
             int ID,year,c1_id,c1_grade,c2_id,c2_grade,c3_id,c3_grade;
             
@@ -103,9 +131,7 @@ Bool SDB_AddEntry(){
         }
 
         else{
-            printf("data base is full");
+            printf("data base is full\n");
             return False;
         }
     }
-    
-    
