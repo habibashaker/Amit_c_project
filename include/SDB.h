@@ -21,3 +21,6 @@ Bool SDB_ReadEntry(uint32 id);
 void SDB_GetList(uint8 * count,uint32 * list);
 Bool SDB_IsIdExist(uint32 id);
 
+void SDB_APP();
+void SDB_action(uint8 choice);
+
