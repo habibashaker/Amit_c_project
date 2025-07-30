@@ -3,57 +3,43 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#define max_students 10
 
+
+//.....................Problems........................
+//program crashes when we enter letters (solved)
+
+//When scanf fails, it does not remove the character from input buffer (It does remove data from buffer when it succeeds).
+//So, the next time scanf is triggered in the loop, it will not wait for user input at all (since it has an unread character in its buffer).
+//But it fails again, and again (since everytime it fails) and hence will go into an infinite loop.
+
+
+uint32 studentCount = 0;
 student database[10];
-static int studentCount = 0;
 
-/*int main(){
 
-    SDB_AddEntry();
-    SDB_AddEntry();
-    SDB_AddEntry();
-    // SDB_AddEntry();
-    // SDB_AddEntry();
-    // SDB_AddEntry();
-    // SDB_AddEntry();
-    // SDB_AddEntry();
-    // SDB_AddEntry();
-    // SDB_AddEntry();
-    // SDB_AddEntry();
-    // SDB_AddEntry();
-    printf("-------------------\n");
-    printf("%d\n",studentCount);
-    printf("-------------------\n");
-    printf(".......%d.......\n",SDB_GetUsedSize());
-    printf((SDB_IsFull())? "Full\n":"Not Full\n");
-    printf((SDB_IsIdExist(9266))? "Exist\n":"Not in list\n");
-    SDB_ReadEntry(9266);
-    SDB_DeleteEntry(9266);
-    for(int c=0; c<studentCount;c++){
-        printf("???????%u??????\n",database[c].Student_ID);
-    }   
-    return 0;
-}*/
-
+void clearInputBuffer(){
+    int ch;
+    while(getchar()!='\n' && ch != EOF);
+}
 
 Bool SDB_IsFull(){
-    if(SDB_GetUsedSize()==10){
+    if(SDB_GetUsedSize()==max_students){
         return True;
     }
     return False;
 }
 
 void SDB_GetList(uint8 * count,uint32 * list){
-
+    *count = 0;
+    for(int i=0;i<studentCount;i++){
+        list[*count] = database[i].Student_ID;
+        (*count)++;
+    }
 }
 
 uint8 SDB_GetUsedSize(){
-    for(int i=0;i<10;i++){
-        if(database[i].Student_ID == 0){
-            return i;
-        }
-    }
-    return 10;
+    return studentCount;
 }
 
 void SDB_DeleteEntry(uint32 id){
@@ -65,7 +51,9 @@ void SDB_DeleteEntry(uint32 id){
             for(int j = i;j<studentCount-1;j++){
                 database[j] = database[j+1];
             }
-            studentCount-=1;
+            database[studentCount-1] = (student) {0};
+
+            studentCount--;
         }
     }   
 }
@@ -96,88 +84,102 @@ Bool SDB_ReadEntry(uint32 id){
 
 }
 
-Bool SDB_AddEntry(){//ID unique doesn't start with zero
+Bool validateID(int32 id){
+    if(id<=0 || SDB_IsIdExist((uint32)id)){
+        printf("\nInvalid input for ID\n");
+        printf("ID must be a positive integer and unique.\n");
+        return False;
+    }
+    return True;
+}
+
+Bool validate_grade(int32 grade){
+    if(grade<0 || grade>100){
+        printf("\nInvalid input for grade\n");
+        printf("Grade must be between 0 and 100.\n");
+        return False;
+    }
+    return True;
+}
+
+Bool SDB_AddEntry(){//ID unique ,doesn't start with zero?
         if(studentCount<10){
-            int ID,year,c1_id,c1_grade,c2_id,c2_grade,c3_id,c3_grade;
+            int32 ID,year,c1_id,c1_grade,c2_id,c2_grade,c3_id,c3_grade;
             
             printf("Enter ID: \n");
-                if(scanf("%d",&ID)!=1 || ID <=0){
-                    printf("Invalid input for ID\n");
-                    return False;
+            scanf("%d",&ID);
+            if(!validateID(ID)){
+                clearInputBuffer();
+                return False;
                 }
-                else{
-                    database[studentCount].Student_ID = (uint32) ID;
-                }
+            database[studentCount].Student_ID = (uint32) ID;
 
             printf("Enter Year: \n");
                 if(scanf("%d",&year)!=1 || year<1900){
-                    printf("Invalid input for Year\n");
+                    clearInputBuffer();
+                    printf("\nInvalid input for Year\n");
                     return False;
-                }
-                else{
-                database[studentCount].Student_year = (uint32) year;
             }
+            database[studentCount].Student_year = (uint32) year;
 
             printf("Enter Course1 ID: \n");
                 if(scanf("%d",&c1_id)!=1 || c1_id<=0){
+                    clearInputBuffer();
                     printf("Invalid input for Course1 ID\n");
                     return False;
                 }
-                else{
                 database[studentCount].Course1_ID = (uint32) c1_id;
-            }
+            
 
             printf("Enter Course1 grade: \n");
-            if(scanf("%d",&c1_grade) !=1 || c1_grade<0 || c1_grade>100){
-                printf("Invalid input for Course1 grade\n");
+            scanf("%d",&c1_grade);
+            if(!validate_grade(c1_grade)){
+                clearInputBuffer();
                 return False;
             }
-            else{
-                database[studentCount].Course1_grade = (uint32) c1_grade;
-            }
+            database[studentCount].Course1_grade = (uint32) c1_grade;
+            
             
             printf("Enter Course2 ID: \n");
                 if(scanf("%d",&c2_id)!=1 || c2_id<=0){
+                    clearInputBuffer();
                     printf("Invalid input for Course2 ID\n");
                     return False;
                 }
-                else{
-                    database[studentCount].Course2_ID = (uint32) c2_id;
-                }
+                
+                database[studentCount].Course2_ID = (uint32) c2_id;
+        
 
             printf("Enter Course2 grade: \n");
-                if(scanf("%d",&c2_grade) !=1 || c2_grade<0 || c2_grade>100){
-                    printf("Invalid input for Course2 grade\n");
+            scanf("%d",&c2_grade);
+                if(!validate_grade(c2_grade)){
+                    clearInputBuffer();
                     return False;
                 }
-                else{
                 database[studentCount].Course2_grade = (uint32) c2_grade;
-            }
 
             printf("Enter Course3 ID: \n");
                 if(scanf("%d",&c3_id)!=1 || c3_id<=0){
+                    clearInputBuffer();
                     printf("Invalid input for Course3 ID\n");
                     return False;
                 }
-                else{
                     database[studentCount].Course3_ID = (uint32) c3_id;
-                }
+                
 
             printf("Enter Course3 grade: \n");
-                if(scanf("%d",&c3_grade) !=1 || c3_grade<0 || c3_grade>100){
-                    printf("Invalid input for Course3 grade\n");
+                if(scanf("%d",&c3_grade) !=1 || !validate_grade(c3_grade)){
                     return False;
                 }
-                else{
-                    database[studentCount].Course3_grade = (uint32) c3_grade;
-                }
+                database[studentCount].Course3_grade = (uint32) c3_grade;
+               
 
             studentCount++;
             return True;
         }
 
         else{
-            printf("data base is full\n");
+            printf("\ndata base is full\n");
             return False;
         }
     }
