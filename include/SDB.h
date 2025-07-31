@@ -13,6 +13,8 @@ typedef struct SimpleDb
     uint32 Course3_grade;
 }student;
 
+extern uint32 studentCount;
+
 Bool SDB_IsFull();
 uint8 SDB_GetUsedSize();
 Bool SDB_AddEntry();
@@ -21,6 +23,9 @@ Bool SDB_ReadEntry(uint32 id);
 void SDB_GetList(uint8 * count,uint32 * list);
 Bool SDB_IsIdExist(uint32 id);
 
+Bool validate_ID(int32 id);
+Bool validate_grade(int32 grade);
+void clearInputBuffer();
+
 void SDB_APP();
 void SDB_action(uint8 choice);
-
