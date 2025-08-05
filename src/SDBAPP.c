@@ -2,11 +2,17 @@
 #include "STD.h"
 #include <stdio.h>
 #include <stdlib.h>
-
+/**
+ * @brief 
+ * This function is the main application loop for the Student Database (SDB).
+ * It provides a menu for the user to interact with the database, allowing them to add entries, check the size, 
+ * read student data, get a list of student IDs, check if an ID exists, delete student data, and check if the database is full.
+ * The loop continues until the user chooses to exit by entering 0.
+ */
 void SDB_APP(){
     uint8 choice;
     do{
-        printf("\n--------------------\n");
+        printf("--------------------\n");
         
         printf("To add entry,enter 1\n");
         printf("To get used size in database,enter 2\n");
@@ -21,11 +27,18 @@ void SDB_APP(){
         printf("\nEnter your choice: \n");
         scanf("%u", &choice);
         SDB_action(choice);
+        printf("\n");
     }
 
     while(choice != 0);
 }
 
+/**
+ * @brief This function performs an action based on the user's choice.
+ *
+ * 
+ * @param choice 
+ */
 void SDB_action(uint8 choice){
         if (studentCount < 3 && choice > 2 && choice < 8) {
                 printf("\nAt least 3 students are required to perform this action.\n");

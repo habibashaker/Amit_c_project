@@ -13,7 +13,6 @@ typedef struct SimpleDb
     uint32 Course3_grade;
 }student;
 
-//extern student database[10];
 extern uint32 studentCount;
 
 Bool SDB_IsFull();
@@ -30,4 +29,3 @@ void clearInputBuffer();
 
 void SDB_APP();
 void SDB_action(uint8 choice);
-
