@@ -9,10 +9,6 @@
 uint32 studentCount = 0;
 student database[10];
 
-void clearInputBuffer(){
-    int ch;
-    while(getchar()!='\n' && ch != EOF);
-}
 
 //helping functions
 
@@ -271,4 +267,3 @@ Bool SDB_ReadEntry(uint32 id){
         }
     }
 }
-
