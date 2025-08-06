@@ -37,13 +37,12 @@ void clearInputBuffer(){
  * @param id Student ID
  * @return Bool (false if negative true if positive)
  */
-Bool validate_ID(int32 id){
-    if(id<=0){
+Bool validate_Integer(int32 id){
+    if(id<0){
         return False;
     }
     return True;
 }
-
 
 /**
  * @brief limits grade between 0 and 100
@@ -52,13 +51,22 @@ Bool validate_ID(int32 id){
  */
 Bool validate_grade(int32 grade){
     if(grade<0 || grade>100){
-        printf("\nInvalid input for grade\n");
-        printf("Grade must be between 0 and 100.\n");
         return False;
     }
     return True;
 }
 
+/**
+ * @brief checks if year is valid or not
+ * @param year 
+ * @return Bool False(if year is less than 1900)
+ */
+Bool validate_year(int32 year){
+    if(year<1900){
+        return False;
+    }
+    return True;
+}
                                              
 /**
  * @brief make sure that user doesn't enter same id for different courses
@@ -74,7 +82,7 @@ Bool validate_grade(int32 grade){
  * @param count to only loop number of students added times
  * @return Bool 
  */
-Bool IsCourseIDExist(int32 id, int32 courseId[], int count){
+Bool CourseIDExist(int32 id, int32 courseId[], int count){
     for(int i = 0;i<count;i++){
         if(courseId[i] == id){
             return True;
@@ -84,6 +92,22 @@ Bool IsCourseIDExist(int32 id, int32 courseId[], int count){
 
 }
 
+/**
+ * @brief Gets input from the user and validates it using a provided validator function.
+ * 
+ * @param msg The message to display to the user.
+ * @param value Pointer to store the input value.
+ * @param validator Function pointer to a validation function that checks the input.
+ * @return Bool True if input is valid, False otherwise.
+ */
+Bool getInput(const char * msg, int32 *value, Bool (*validator)(int32)) { 
+    printf("%s", msg);
+    if (scanf("%d", value) != 1 || !validator(*value)) {
+        clearInputBuffer();
+        return False;
+    }
+    return True;
+}
 
 //----------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -91,67 +115,71 @@ Bool IsCourseIDExist(int32 id, int32 courseId[], int count){
 //user functions
 
 /**
- * @brief This function adds students to array 
- * First: it asks user to enter id then validate it and checks does it exist or no if it exists/ wrong input it returns false 
- * Second: it asks user to enter year then validate it
- * Third: it asks user to enter 3 courses ID and grades then validate them
+ * @brief This function adds students to database. 
+ * 1. It first checks if the database is full using SDB_IsFull() function. 
+ * 2. it asks user to enter id then validate it and checks does it exist or no if it exists/ wrong input it returns false.
+ * 3. it asks user to enter year then validate it
+ * 4. it asks user to enter 3 courses ID and grades then validate them
  * Finally: it adds the student to the database and returns true if all inputs are valid.
  * If any input is invalid, it will print an error message and return False.
- * 
- * @note why i implemented this function this way?
- * First: i wanted to make sure that the database is not full before adding a new student. that's why i used SDB_IsFull() function.
- * Second: i wanted to read student's entry from user so i used scanf to read the input.
- * Third: i wanted to validate the input for ID, Year, Course ID and Course Grade. That's why i used Helper functions
- *        validate_ID, validate_grade and IsCourseIDExist.
  * 
  * @note If the database is full, it will print a message and return False.
  * 
  * @return Bool True if the student is added successfully, False otherwise.
  */
 Bool SDB_AddEntry(){
+    // Check if the database is full
     if(SDB_IsFull()){
         printf("Database is Full.\n");
         return False;
     }
     student newStud;
 
+
+    // Get and validate Student ID
     int32 ID;
-    printf("Enter ID: \n");
-        scanf("%d",&ID);
-        if(!validate_ID(ID)|| SDB_IsIdExist((uint32)ID)){
-            clearInputBuffer();
-            printf("\nInvalid input for ID\n");
-            printf("ID must be a positive integer and unique. \n");
-            return False;
-        }
+    if(!getInput("Enter Student ID: \n",&ID,validate_Integer)){
+        printf("\nInvalid input for ID\n");
+        printf("ID must be a positive integer and unique. \n");
+        return False;
+    }
+    if(SDB_IsIdExist((uint32) ID)){
+        printf("\nID already exists.\n");
+        return False;
+    }
     newStud.Student_ID = (uint32) ID;
-    
-    uint32 year;
-    printf("Enter Year: \n");
-        if(scanf("%d",&year)!=1 || year<1900){
-            clearInputBuffer();
-            printf("\nInvalid input for Year\n");
-            return False;
-        }
-    newStud.Student_year =  year;
-    
+   
+
+    // Get and validate Student Year
+    int32 year;
+    if(!getInput("Enter Year: \n",&year,validate_year)){
+        printf("\nInvalid input for Year\n");
+        printf("Year must be a greater than 1900.\n");
+        return False;
+    }
+    newStud.Student_year = (uint32) year;
+
+
+    //Get and validate Course IDs and Grades
     int courseID[3];
     int courseGrade[3];
+    char msg[50];
     for(int i =0;i<3;i++){
-
-        printf("Enter Course %d ID: \n",i+1);
-        scanf("%d",&courseID[i]);
-        if(!validate_ID(courseID[i]) || IsCourseIDExist(courseID[i],courseID,i)){
+        sprintf(msg, "Enter Course %d ID: \n", i+1);
+        if(!getInput(msg, &courseID[i], validate_Integer)){
             printf("\nInvalid input for Course ID\n");
-            printf("Course ID must be a positive integer. \n");
-            clearInputBuffer();
+            printf("Course ID must be a positive integer and unique. \n");
             return False;
         }
 
-        printf("Enter Course %d grade: \n",i+1);
-        scanf("%d",&courseGrade[i]);
-        if(!validate_grade(courseGrade[i])){
-            clearInputBuffer();
+        if(CourseIDExist(courseID[i], courseID, i)){
+            printf("\nCourse ID %d already exists.\n", courseID[i]);
+            return False;
+        }
+        sprintf(msg, "Enter Course %d Grade: \n", i+1);
+        if(!getInput(msg, &courseGrade[i], validate_grade)){
+            printf("\nInvalid input for Course Grade\n");
+            printf("Grade must be between 0 and 100.\n");
             return False;
         }
     }
@@ -159,6 +187,7 @@ Bool SDB_AddEntry(){
     newStud.Course2_ID = courseID[1];  newStud.Course2_grade = courseGrade[1];
     newStud.Course3_ID = courseID[2];  newStud.Course3_grade = courseGrade[2];
 
+    // Add the new student to the database
     database[studentCount] = newStud;
     studentCount++;
     return True;
@@ -236,11 +265,12 @@ void SDB_DeleteEntry(uint32 id){
                 database[j] = database[j+1];
             }
             database[studentCount-1] = (student) {0};
-
+            printf("Student with ID %u deleted successfully.\n", id); 
             studentCount--;
         }
-    }   
-}
+    }
+} 
+    
 
 
 /**
@@ -254,9 +284,9 @@ void SDB_DeleteEntry(uint32 id){
  */
 Bool SDB_ReadEntry(uint32 id){
     if(!SDB_IsIdExist(id)){
-        printf("Student with ID %u not found.\n",id);
-        return False;
-    }
+        printf("\nStudent with ID %u not found.\n",id);
+        return False;   
+}
     for(int i=0;i<studentCount;i++){
         if(database[i].Student_ID == id){
             printf("Student ID: %u\nStudent Year: %u\n",database[i].Student_ID,database[i].Student_year);
