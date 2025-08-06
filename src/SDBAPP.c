@@ -2,6 +2,7 @@
 #include "STD.h"
 #include <stdio.h>
 #include <stdlib.h>
+
 /**
  * @brief 
  * This function is the main application loop for the Student Database (SDB).
@@ -72,9 +73,7 @@ void SDB_action(uint8 choice){
                 if(SDB_ReadEntry((uint32) id)){
                     printf("\nData read successfully.\n");
                 } 
-                // else {
-                //     printf("\nFailed to read data for ID %u.\n", id);
-                // }
+                
                 break;
             }
             

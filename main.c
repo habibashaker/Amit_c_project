@@ -10,5 +10,3 @@ int main(){
 }
 
 
-//gcc main.c src/SDB.c src/SDBAPP.c -Iinclude -o program.exe  
-//-I folder_name tells the compiler where to look for the header files.

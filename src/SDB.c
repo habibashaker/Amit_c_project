@@ -133,6 +133,7 @@ Bool SDB_AddEntry(){
         printf("Database is Full.\n");
         return False;
     }
+
     student newStud;
 
 
@@ -140,7 +141,7 @@ Bool SDB_AddEntry(){
     int32 ID;
     if(!getInput("Enter Student ID: \n",&ID,validate_Integer)){
         printf("\nInvalid input for ID\n");
-        printf("ID must be a positive integer and unique. \n");
+        printf("ID must be a positive integer. \n");
         return False;
     }
     if(SDB_IsIdExist((uint32) ID)){
