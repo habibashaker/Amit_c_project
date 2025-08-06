@@ -25,7 +25,11 @@ void SDB_APP(){
         
         printf("--------------------\n");
         printf("\nEnter your choice: \n");
-        scanf("%u", &choice);
+        if(scanf("%u", &choice) != 1) {
+            clearInputBuffer();
+            printf("\nInvalid input. Please enter a number.\n");
+            continue;
+        }
         SDB_action(choice);
         printf("\n");
     }
@@ -111,6 +115,7 @@ void SDB_action(uint8 choice){
                 printf("\nExiting the application.\n");
                 break;
             default:
+                clearInputBuffer();
                 printf("\nInvalid choice. Please try again.\n");
                 break;
          

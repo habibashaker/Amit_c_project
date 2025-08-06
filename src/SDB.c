@@ -119,9 +119,9 @@ Bool SDB_AddEntry(){
     printf("Enter ID: \n");
         scanf("%d",&ID);
         if(!validate_ID(ID)|| SDB_IsIdExist((uint32)ID)){
+            clearInputBuffer();
             printf("\nInvalid input for ID\n");
             printf("ID must be a positive integer and unique. \n");
-            clearInputBuffer();
             return False;
         }
     newStud.Student_ID = (uint32) ID;
