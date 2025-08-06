@@ -13,9 +13,7 @@ This is a simple student database system written in C. It allows the user to:
 
 Maximum number of students in Database is 10 and Minimum 3.
 
-
-### How to set up and run project
-
+## How to set up and run project
 
 #### Requirements
 * GCC compiler.
@@ -42,7 +40,8 @@ make run
 make clean
 ```
 
-### Video Demo
+
+## Video Demo
 
 
 [drive link](https://drive.google.com/drive/folders/14xOguNNZjuYgE4QkXyGpNyDkzYpbu3ij?usp=sharing)
