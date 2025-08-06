@@ -10,8 +10,8 @@
  * The loop continues until the user chooses to exit by entering 0.
  */
 void SDB_APP(){
-    uint8 choice;
-    do{
+    int32 choice;
+    while(1){
         printf("--------------------\n");
         
         printf("To add entry,enter 1\n");
@@ -24,19 +24,24 @@ void SDB_APP(){
         printf("To exit,enter 0\n");
         
         printf("--------------------\n");
-        printf("\nEnter your choice: \n");
-        scanf("%u", &choice);
-        SDB_action(choice);
+        
+        if(!getInput("Enter your choice: \n", &choice, validate_Integer)){
+            printf("\nInvalid input. Please enter a valid choice.\n\n");
+            continue;
+        }
+        if(choice ==0){
+            printf("\nExiting...\n");
+            break;
+        }
+
+        SDB_action((uint8) choice);
         printf("\n");
     }
-
-    while(choice != 0);
 }
 
 /**
  * @brief This function performs an action based on the user's choice.
  *
- * 
  * @param choice 
  */
 void SDB_action(uint8 choice){
@@ -58,14 +63,18 @@ void SDB_action(uint8 choice){
                 break;
             
             case 3: {
-                uint32 id;
-                printf("\nEnter Student ID to read data: \n");
-                scanf("%u", &id);
-                if(SDB_ReadEntry(id)){
-                    printf("\nData read successfully.\n");
-                } else {
-                    printf("\nFailed to read data for ID %u.\n", id);
+                int32 id;
+                if(!getInput("Enter Student ID to read data: \n", &id, validate_Integer)){
+                    printf("\nInvalid input for Student ID\n");
+                    return;
                 }
+
+                if(SDB_ReadEntry((uint32) id)){
+                    printf("\nData read successfully.\n");
+                } 
+                // else {
+                //     printf("\nFailed to read data for ID %u.\n", id);
+                // }
                 break;
             }
             
@@ -76,15 +85,17 @@ void SDB_action(uint8 choice){
 
                 printf("\nList of student IDs:\n");
                 for(int i = 0; i < count; i++){
-                    printf("%u\n", list[i]);
+                    printf("Student %d: %u\n", i+1, list[i]);
                 }
                 break;
             }
             case 5:{
-                uint32 id;
-                printf("\nEnter Student ID to check existence: \n");
-                scanf("%u", &id);
-                if(SDB_IsIdExist(id)){
+                int32 id;
+                if(!getInput("Enter Student ID to check existence: \n", &id, validate_Integer)){
+                    printf("\nInvalid input for Student ID\n");
+                    return;
+                }
+                if(SDB_IsIdExist((uint32) id)){
                     printf("\nID %u exists in the database.\n", id);
                 } else {
                     printf("ID %u does not exist in the database.\n", id);
@@ -92,10 +103,12 @@ void SDB_action(uint8 choice){
                 break;
             }
             case 6: {
-                uint32 id;
-                printf("\nEnter Student ID to delete data: \n");
-                scanf("%u", &id);
-                SDB_DeleteEntry(id);
+                int32 id;
+                if(!getInput("Enter Student ID to delete data: \n", &id, validate_Integer)){
+                    printf("\nInvalid input for Student ID\n");
+                    return;
+                }
+                SDB_DeleteEntry((uint32) id);
                 break;
             }
             
@@ -107,9 +120,6 @@ void SDB_action(uint8 choice){
                 }
                 break;
         
-            case 0:
-                printf("\nExiting the application.\n");
-                break;
             default:
                 printf("\nInvalid choice. Please try again.\n");
                 break;

@@ -23,9 +23,14 @@ Bool SDB_ReadEntry(uint32 id);
 void SDB_GetList(uint8 * count,uint32 * list);
 Bool SDB_IsIdExist(uint32 id);
 
-Bool validate_ID(int32 id);
-Bool validate_grade(int32 grade);
+
 void clearInputBuffer();
+Bool validate_Integer(int32 id);
+Bool validate_grade(int32 grade);
+Bool validate_year(int32 year);
+Bool CourseIDExist(int32 id, int32 courseId[], int count);
+Bool getInput(const char * msg, int32 *value, Bool (*validator)(int32));
+
 
 void SDB_APP();
 void SDB_action(uint8 choice);
